@@ -458,42 +458,10 @@ p { margin: 0; }
 .crew .person h3 { font-size: 1.3rem; }
 @media (max-width: 860px) { .crew { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
 
-/* ---------- draft markers (remove "draft marks" from <body> to hide) ---------- */
+/* ---------- placeholder markers: add class="marks" to <body> to show them ---------- */
 .marks .tbd { color: var(--tbd); }
 .draft-only { display: none; }
 .marks .draft-only { display: block; }
-.draft-ribbon { display: none; }
-.draft .draft-ribbon {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: fixed;
-  z-index: 60;
-  left: max(16px, env(safe-area-inset-left, 0px));
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  max-width: calc(100% - 32px);
-  margin: 0;
-  padding: 6px 6px 6px 14px;
-  border-radius: 999px;
-  background: var(--tbd);
-  color: #1E1608;
-  font-size: 12.5px;
-  font-weight: 600;
-}
-.draft:not(.marks) .draft-ribbon { background: var(--paper); color: var(--night); }
-.marks-toggle {
-  flex: none;
-  font: inherit;
-  color: inherit;
-  background: transparent;
-  border: 1px solid currentColor;
-  border-radius: 999px;
-  padding: 5px 12px;
-  cursor: pointer;
-}
-.off-label { display: none; }
-.draft:not(.marks) .on-label { display: none; }
-.draft:not(.marks) .off-label { display: inline; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

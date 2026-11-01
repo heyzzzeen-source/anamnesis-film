@@ -377,7 +377,7 @@ p { margin: 0; }
 .credits dt { text-align: right; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .credits dd { margin: 0; font-size: 1.35rem; }
 
-/* ---------- draft markers (remove "draft marks" from <body> to hide) ---------- */
+/* ---------- placeholder markers: add class="marks" to <body> to show them ---------- */
 .marks .tbd {
   background: var(--hl);
   color: var(--ink);
@@ -387,37 +387,6 @@ p { margin: 0; }
 }
 .draft-only { display: none; }
 .marks .draft-only { display: block; }
-.draft-ribbon { display: none; }
-.draft .draft-ribbon {
-  display: flex;
-  align-items: center;
-  gap: 12px;
-  position: fixed;
-  z-index: 60;
-  left: max(16px, env(safe-area-inset-left, 0px));
-  bottom: calc(16px + env(safe-area-inset-bottom, 0px));
-  max-width: calc(100% - 32px);
-  margin: 0;
-  padding: 6px 6px 6px 12px;
-  background: var(--ink);
-  color: var(--paper);
-  font-family: var(--mono);
-  font-size: 12.5px;
-}
-.draft-ribbon mark { background: var(--hl); color: var(--ink); padding: 0 .2em; }
-.marks-toggle {
-  flex: none;
-  font: inherit;
-  color: var(--ink);
-  background: var(--paper);
-  border: 0;
-  padding: 6px 10px;
-  cursor: pointer;
-}
-.marks-toggle:hover { background: var(--white); }
-.off-label { display: none; }
-.draft:not(.marks) .on-label { display: none; }
-.draft:not(.marks) .off-label { display: inline; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

@@ -18,23 +18,6 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
   }
 
-  /* Draft only: switch the placeholder markers off to preview the clean look. */
-  const marksBtn = document.querySelector('.marks-toggle');
-  if (marksBtn) {
-    const apply = on => {
-      document.body.classList.toggle('marks', on);
-      marksBtn.setAttribute('aria-pressed', String(on));
-    };
-    let saved = null;
-    try { saved = localStorage.getItem('anm:marks'); } catch {}
-    apply(saved !== 'off');
-    marksBtn.addEventListener('click', () => {
-      const on = !document.body.classList.contains('marks');
-      apply(on);
-      try { localStorage.setItem('anm:marks', on ? 'on' : 'off'); } catch {}
-    });
-  }
-
   /* Recall: pictures come into focus once, as they scroll into view. */
   const recalls = document.querySelectorAll('.recall');
   if (reduceMotion || !('IntersectionObserver' in window)) {
