@@ -377,8 +377,8 @@ p { margin: 0; }
 .credits dt { text-align: right; font-family: var(--mono); font-size: 12px; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); }
 .credits dd { margin: 0; font-size: 1.35rem; }
 
-/* ---------- draft markers (remove the .draft class from <body> to hide) ---------- */
-.tbd {
+/* ---------- draft markers (remove "draft marks" from <body> to hide) ---------- */
+.marks .tbd {
   background: var(--hl);
   color: var(--ink);
   -webkit-box-decoration-break: clone;
@@ -386,22 +386,38 @@ p { margin: 0; }
   padding: 0 .12em;
 }
 .draft-only { display: none; }
-.draft .draft-only { display: block; }
+.marks .draft-only { display: block; }
 .draft-ribbon { display: none; }
 .draft .draft-ribbon {
-  display: block;
+  display: flex;
+  align-items: center;
+  gap: 12px;
   position: fixed;
   z-index: 60;
   left: max(16px, env(safe-area-inset-left, 0px));
   bottom: calc(16px + env(safe-area-inset-bottom, 0px));
+  max-width: calc(100% - 32px);
   margin: 0;
-  padding: 8px 12px;
+  padding: 6px 6px 6px 12px;
   background: var(--ink);
   color: var(--paper);
   font-family: var(--mono);
-  font-size: 12px;
+  font-size: 12.5px;
 }
 .draft-ribbon mark { background: var(--hl); color: var(--ink); padding: 0 .2em; }
+.marks-toggle {
+  flex: none;
+  font: inherit;
+  color: var(--ink);
+  background: var(--paper);
+  border: 0;
+  padding: 6px 10px;
+  cursor: pointer;
+}
+.marks-toggle:hover { background: var(--white); }
+.off-label { display: none; }
+.draft:not(.marks) .on-label { display: none; }
+.draft:not(.marks) .off-label { display: inline; }
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
