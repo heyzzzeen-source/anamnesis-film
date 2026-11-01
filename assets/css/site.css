@@ -250,7 +250,7 @@ p { margin: 0; }
   left: max(20px, env(safe-area-inset-left, 0px));
   top: calc(100px + env(safe-area-inset-top, 0px));
   font-size: 12px;
-  color: var(--tbd);
+  color: var(--mist);
 }
 
 /* ---------- home: intro ---------- */
@@ -460,8 +460,7 @@ p { margin: 0; }
 
 /* ---------- placeholder markers: add class="marks" to <body> to show them ---------- */
 .marks .tbd { color: var(--tbd); }
-.draft-only { display: none; }
-.marks .draft-only { display: block; }
+/* Notes for the team (class="draft-only") stay visible in the drafts; delete them before launch. */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }

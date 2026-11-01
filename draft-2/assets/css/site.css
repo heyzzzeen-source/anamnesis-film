@@ -385,8 +385,7 @@ p { margin: 0; }
   box-decoration-break: clone;
   padding: 0 .12em;
 }
-.draft-only { display: none; }
-.marks .draft-only { display: block; }
+/* Notes for the team (class="draft-only") stay visible in the drafts; delete them before launch. */
 
 @media (prefers-reduced-motion: reduce) {
   html { scroll-behavior: auto; }
