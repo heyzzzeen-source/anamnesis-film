@@ -1,0 +1,3 @@
+# Drafts in progress: keep out of search results until launch.
+User-agent: *
+Disallow: /
