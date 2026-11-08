@@ -3,12 +3,14 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<meta name="robots" content="noindex, nofollow">
 <title>Anamnesis Film</title>
-<meta name="description" content="Anamnesis Film is an independent documentary studio.">
+<meta name="description" content="Anamnesis Film is an independent art film studio.">
 <meta property="og:title" content="Anamnesis Film">
-<meta property="og:description" content="An independent documentary studio.">
+<meta property="og:description" content="An independent art film studio.">
 <meta property="og:type" content="website">
+<meta property="og:url" content="https://anamnesisfilm.com/">
+<meta property="og:image" content="https://anamnesisfilm.com/assets/img/hero/hero-01-sm.jpg">
+<meta name="twitter:card" content="summary_large_image">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=EB+Garamond:ital,wght@0,400;0,500;1,400&family=Hanken+Grotesk:wght@400;500;600&display=swap">
@@ -24,29 +26,84 @@
       <a href="#films">Films</a>
       <a href="#about">About</a>
       <a href="#contact">Contact</a>
-      <a class="pill" href="project.html">Amsterdam 2026</a>
     </nav>
   </div>
 </header>
 
 <main id="top">
-  <section class="hero" aria-label="Introduction">
-    <canvas class="hero-grain" aria-hidden="true"></canvas>
-    <!-- When the loop arrives, replace the canvas with:
-         <video src="assets/video/loop.mp4" autoplay muted loop playsinline poster="assets/img/loop-poster.jpg"></video> -->
-    <h1 class="sr-only">Anamnesis Film, an independent documentary studio</h1>
-    <p class="taglines" aria-hidden="true">
-      <span class="on">Stories That Stay</span>
-      <span>Lives Kept in Light</span>
-      <span>Remembered, Together</span>
-    </p>
-    <p class="hero-note draft-only">Draft taglines · the homepage video loop plays here</p>
-    <a class="scroll-cue" href="#intro">Scroll</a>
+  <section class="hero" aria-labelledby="hero-title">
+    <!-- First screen: the studio at work, a slow crossfade. Only the first photo loads with the page;
+         site.js loads the rest and fades between them. --pos is each photo's focal point. -->
+    <div class="hero-slides" data-slides>
+      <img class="is-on" src="assets/img/hero/hero-03.jpg" srcset="assets/img/hero/hero-03-sm.jpg 1200w, assets/img/hero/hero-03.jpg 2000w" sizes="100vw" alt="" fetchpriority="high" style="--pos: 77% 55%">
+      <img data-src="assets/img/hero/hero-01.jpg" data-srcset="assets/img/hero/hero-01-sm.jpg 1200w, assets/img/hero/hero-01.jpg 2000w" sizes="100vw" alt="" style="--pos: 40% 7%">
+      <img data-src="assets/img/hero/hero-02.jpg" data-srcset="assets/img/hero/hero-02-sm.jpg 1200w, assets/img/hero/hero-02.jpg 2000w" sizes="100vw" alt="" style="--pos: 55% 45%">
+      <img data-src="assets/img/hero/hero-04.jpg" data-srcset="assets/img/hero/hero-04-sm.jpg 1200w, assets/img/hero/hero-04.jpg 1920w" sizes="100vw" alt="" style="--pos: 45% 35%">
+    </div>
+    <div class="container hero-copy">
+      <h1 id="hero-title">An independent art film studio</h1>
+      <p>Anamnesis Film · Seoul, since 2012</p>
+    </div>
+    <button class="slides-toggle" type="button" aria-label="Pause the slideshow" hidden>Pause</button>
+  </section>
+
+  <section class="now-films" id="now" aria-labelledby="now-title">
+    <div class="container">
+      <div class="section-head">
+        <h2 id="now-title">Looking for partners</h2>
+        <p class="label">Now</p>
+      </div>
+      <div class="now-grid">
+        <article class="now-card">
+          <a class="frame grain" href="prayer.html" aria-label="View A Prayer Carried toward the Altar"><img src="assets/img/films/prayer-01.jpg" alt="A bishop in white and crimson stands before an iron-grilled window among burial niches, as a small group looks on" loading="lazy"><span class="frame-tag">Pitching · IDFA 2026</span></a>
+          <div class="now-text">
+            <h3><a href="prayer.html">A Prayer Carried toward the Altar</a> <span class="ko" lang="ko">어느 신학생의 기도</span></h3>
+            <p class="facts">Feature documentary · In production · Expected 2027</p>
+            <p class="ask label">K-Pitch Day at IDFA · November 2026</p>
+            <ul class="chips">
+              <li>Financing and funds</li>
+              <li>Sales agent</li>
+              <li>Broadcasters</li>
+              <li>Distributors</li>
+              <li>Festival programmers</li>
+            </ul>
+            <div class="actions"><a class="btn solid" href="prayer.html">View the project</a></div>
+          </div>
+        </article>
+        <article class="now-card">
+          <a class="frame grain" href="hydrangea.html" aria-label="View Hydrangea"><img src="assets/img/films/hydrangea-01.jpg" alt="A small white ship on the horizon under a wide, cloudy sky" loading="lazy"><span class="frame-tag">DMZ Docs 2026</span></a>
+          <div class="now-text">
+            <h3><a href="hydrangea.html">Hydrangea</a> <span class="ko" lang="ko">수국</span></h3>
+            <p class="facts">Feature documentary · 2026 · 75 min</p>
+            <p class="ask label">International distribution</p>
+            <ul class="chips">
+              <li>Distributors</li>
+              <li>Sales agent</li>
+              <li>Festival programmers</li>
+              <li>Impact partners</li>
+            </ul>
+            <div class="actions"><a class="btn solid" href="#contact">Request a screener</a></div>
+          </div>
+        </article>
+        <article class="now-card">
+          <a class="frame grain" href="sirens.html" aria-label="View The Silence of the Sirens"><img src="assets/img/films/sirens-01.jpg" alt="Close-up of the painted eye of a giant whale sculpture, apartment buildings behind it" loading="lazy"><span class="frame-tag">In development</span></a>
+          <div class="now-text">
+            <h3><a href="sirens.html">The Silence of the Sirens</a> <span class="ko" lang="ko">세이렌의 침묵</span></h3>
+            <p class="facts">Hybrid documentary · In development · Expected 2028</p>
+            <p class="ask label">Co-production</p>
+            <ul class="chips">
+              <li>Co-producers</li>
+            </ul>
+            <div class="actions"><a class="btn solid" href="sirens.html">View the project</a></div>
+          </div>
+        </article>
+      </div>
+    </div>
   </section>
 
   <section class="intro" id="intro">
     <div class="container intro-grid">
-      <p class="statement">Anamnesis Film is an independent documentary studio based in <span class="tbd">[Seoul]</span>. We make films about <span class="tbd">[the people and histories that are easiest to forget]</span>.</p>
+      <p class="statement">Anamnesis Film is an independent art film studio based in Seoul. We make films that trace how the past lives on in personal and collective memory.</p>
       <aside class="definition" aria-label="About the name">
         <p class="label">The name</p>
         <p class="word">an·am·ne·sis<span class="greek" lang="grc">ἀνάμνησις</span></p>
@@ -55,62 +112,94 @@
     </div>
   </section>
 
-  <section class="pitch" aria-labelledby="pitch-title">
-    <div class="container pitch-grid">
-      <a class="frame grain" href="project.html" style="--f: var(--f1)" aria-label="View the project"><span class="frame-label">Key still</span></a>
-      <div>
-        <p class="label">Now pitching · <span class="tbd">[Event name]</span>, Amsterdam · November 2026</p>
-        <h2 id="pitch-title" class="tbd">[Project Title]</h2>
-        <p class="logline tbd">[One sentence: who the film follows and what is at stake.]</p>
-        <ul class="meta">
-          <li class="tbd">[Feature documentary]</li>
-          <li class="tbd">[In development]</li>
-          <li>Directed by <span class="tbd">[Name]</span></li>
-        </ul>
-        <p class="seeking"><span class="label">Looking for</span><span class="tbd">[Co-producers · Sales agent · Broadcasters]</span></p>
-        <div class="actions">
-          <a class="btn solid" href="project.html">View the project</a>
-          <a class="btn" href="#contact">Contact us</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
   <section class="films" id="films">
     <div class="container">
       <div class="section-head">
         <h2>Films</h2>
-        <p class="label">Documentary · since <span class="tbd">[year]</span></p>
+        <p class="label">Documentary · since 2012</p>
       </div>
-      <div class="film-grid">
-        <article class="film-card">
-          <a href="project.html">
-            <div class="frame" style="--f: var(--f1)"><span class="frame-tag">Amsterdam 2026</span></div>
-            <div>
-              <h3 class="tbd">[Project Title]</h3>
-              <p class="facts"><span class="tbd">[In development]</span> · <span class="tbd">[Feature documentary]</span></p>
-            </div>
+      <ol class="film-list">
+        <li>
+          <a href="prayer.html">
+            <span class="frame"><img src="assets/img/films/prayer-01.jpg" alt="" loading="lazy"></span>
+            <h3>A Prayer Carried toward the Altar</h3>
+            <span class="facts">Feature documentary, 75 min (expected)</span>
+            <span class="status">In production · 2027</span>
           </a>
-        </article>
-        <article class="film-card">
-          <a href="#films">
-            <div class="frame" style="--f: var(--f2)"></div>
-            <div>
-              <h3 class="tbd">[Film Title]</h3>
-              <p class="facts tbd">[2024 · Feature documentary · 88 min]</p>
-            </div>
+        </li>
+        <li>
+          <a href="sirens.html">
+            <span class="frame"><img src="assets/img/films/sirens-01.jpg" alt="" loading="lazy"></span>
+            <h3>The Silence of the Sirens</h3>
+            <span class="facts">Hybrid documentary, 75 min (expected)</span>
+            <span class="status">In development · 2028</span>
           </a>
-        </article>
-        <article class="film-card">
-          <a href="#films">
-            <div class="frame" style="--f: var(--f3)"></div>
-            <div>
-              <h3 class="tbd">[Film Title]</h3>
-              <p class="facts tbd">[2022 · Short documentary · 24 min]</p>
-            </div>
+        </li>
+        <li>
+          <a href="hydrangea.html">
+            <span class="frame"><img src="assets/img/films/hydrangea-01.jpg" alt="" loading="lazy"></span>
+            <h3>Hydrangea</h3>
+            <span class="facts">Feature documentary, 75 min</span>
+            <span class="status">2026</span>
           </a>
-        </article>
-      </div>
+        </li>
+        <li>
+          <a href="abbot.html">
+            <span class="frame"><img src="assets/img/films/abbot-01.jpg" alt="" loading="lazy"></span>
+            <h3>A Benedictine Abbot’s Challenge and Hope</h3>
+            <span class="facts">Television documentary, 50 min</span>
+            <span class="status">2020</span>
+          </a>
+        </li>
+        <li>
+          <a href="elephant.html">
+            <span class="frame"><img src="assets/img/films/elephant-02.jpg" alt="" loading="lazy"></span>
+            <h3>Dear Elephant</h3>
+            <span class="facts">Short documentary, 24 min</span>
+            <span class="status">2019</span>
+          </a>
+        </li>
+        <li>
+          <a href="outcry.html">
+            <span class="frame"><img src="assets/img/films/outcry-01.jpg" alt="" loading="lazy"></span>
+            <h3>The Outcry of the People</h3>
+            <span class="facts">Short documentary, 9 min</span>
+            <span class="status">2017</span>
+          </a>
+        </li>
+        <li>
+          <a href="burmese.html">
+            <span class="frame"><img src="assets/img/films/burmese-01.jpg" alt="" loading="lazy"></span>
+            <h3>Burmese on the Roof</h3>
+            <span class="facts">Feature documentary, 90 min</span>
+            <span class="status">2016</span>
+          </a>
+        </li>
+        <li>
+          <a href="traces.html">
+            <span class="frame"><img src="assets/img/films/traces-01.jpg" alt="" loading="lazy"></span>
+            <h3>Traces of Poverty</h3>
+            <span class="facts">Documentary series, 6 episodes</span>
+            <span class="status">2015–2016</span>
+          </a>
+        </li>
+        <li>
+          <a href="dance.html">
+            <span class="frame"><img src="assets/img/films/dance-01.jpg" alt="" loading="lazy"></span>
+            <h3>Dance, Full of Sound and Fury</h3>
+            <span class="facts">Short experimental film, 8 min</span>
+            <span class="status">2015</span>
+          </a>
+        </li>
+        <li>
+          <a href="photographer.html">
+            <span class="frame"><img src="assets/img/films/photographer-01.jpg" alt="" loading="lazy"></span>
+            <h3>Memories of a Photographer</h3>
+            <span class="facts">Feature documentary, 88 min</span>
+            <span class="status">2014</span>
+          </a>
+        </li>
+      </ol>
     </div>
   </section>
 
@@ -122,32 +211,45 @@
       </div>
       <div class="about-grid">
         <div class="about-copy">
-          <p class="tbd">[Two to four sentences about the studio, from the intake page: who you are, the kind of films you make, and where you work.]</p>
+          <p>Anamnesis Film was founded in 2012 on the belief that cinema can give form to the traces of the past that remain in the present. We make films about the events unfolding around us and how they shape the memories of individuals and communities.</p>
         </div>
         <dl class="studio-facts">
-          <div><dt class="label">Founded</dt><dd class="tbd">[Year]</dd></div>
-          <div><dt class="label">Based in</dt><dd class="tbd">[City, Korea]</dd></div>
-          <div><dt class="label">Focus</dt><dd>Independent documentary</dd></div>
+          <div><dt class="label">Founded</dt><dd>2012</dd></div>
+          <div><dt class="label">Based in</dt><dd>Seoul, Korea</dd></div>
+          <div><dt class="label">Focus</dt><dd>Independent art film</dd></div>
+          <div><dt class="label">Themes</dt><dd>Memory&nbsp;· Traces&nbsp;· Representation&nbsp;· Possibilities of cinema</dd></div>
         </dl>
       </div>
       <div class="team">
         <article class="person">
-          <div class="portrait grain" style="--f: var(--f4)"><span aria-hidden="true">·</span></div>
-          <h3 class="tbd">[Name]</h3>
-          <p class="label">Director</p>
-          <p class="bio tbd">[Short bio, 40 to 90 words, written in the third person.]</p>
+          <div class="portrait"><img src="assets/img/people/changmin-lee-v2.jpg" alt="Changmin Lee" loading="lazy"></div>
+          <h3>Changmin Lee</h3>
+          <p class="label">Director · Producer · Cinematographer</p>
+          <p class="bio">Changmin Lee is a documentary filmmaker and film scholar with a background in Catholic theology, documentary filmmaking and film theory. He co-founded Anamnesis Film in 2012. His films as director include <em>Memories of a Photographer</em> and <em>Dear Elephant</em>, and his producing credits include <em>Burmese on the Roof</em>, <em>Hydrangea</em> and <em>Dance, Full of Sound and Fury</em>. He is currently making <em>A Prayer Carried toward the Altar</em>, a feature documentary about two Korean seminarians who arrived in Rome in 1920 and died before they could be ordained. He is a research professor at the Institute for the Arts at Korea National University of Arts.</p>
         </article>
         <article class="person">
-          <div class="portrait grain" style="--f: var(--f6)"><span aria-hidden="true">·</span></div>
-          <h3 class="tbd">[Name]</h3>
+          <div class="portrait"><img src="assets/img/people/min-seok-jo.jpg" alt="Minseok Jo" loading="lazy"></div>
+          <h3>Minseok Jo</h3>
+          <p class="label">Director · Producer · Writer</p>
+          <p class="bio">Minseok Jo co-founded Anamnesis Film in 2012. He directed <em>The Secret Principle of Things</em>, winner of the New Artist Award at the Seoul International Cinema &amp; Media Art Festival, and <em>Dance, Full of Sound and Fury</em>. He has produced several films by Changmin Lee, including <em>Memories of a Photographer</em> and <em>Dear Elephant</em>, a Special Jury Award winner at the Busan International Short Film Festival, and has worked on many independent films as a cinematographer and assistant director. He also teaches and writes on the principles and practice of classical cinema.</p>
+        </article>
+        <article class="person">
+          <div class="portrait"><img src="assets/img/people/soha-hiroyama-park-v2.jpg" alt="Soha Hiroyama-Park" loading="lazy"></div>
+          <h3>Soha Hiroyama-Park</h3>
+          <p class="label">Director · Cinematographer</p>
+          <p class="bio">Based in Seoul, filmmaker Soha Hiroyama-Park was born in Japan and raised in South Korea. Her work explores how individual lives are shaped by larger narratives, quietly observing the moments where language, identity, and inherited narratives intersect and diverge. She directed the short fiction film <em>Lake and I</em> (2022), which screened at the Busan International Film Festival, Daegu Independent Short Film Festival, and Eye Filmmuseum in Amsterdam, among others. Her debut feature-length documentary, <em>Hydrangea</em> (2026), screened at the DMZ International Documentary Film Festival.</p>
+        </article>
+        <article class="person">
+          <div class="portrait"><img src="assets/img/people/sangyong-kim.jpg" alt="Sang Yong Kim" loading="lazy" style="object-position: 50% 100%"></div>
+          <h3>Sang Yong Kim</h3>
           <p class="label">Producer</p>
-          <p class="bio tbd">[Short bio, 40 to 90 words, written in the third person.]</p>
+          <p class="bio">Sang Yong Kim is an Associate Professor in the Department of Art &amp; Technology at Sogang University, where he teaches undergraduate and graduate students. He studied directing at the Korea National University of Arts and at Sogang’s Graduate School of Media, then philosophy at Sogang’s Graduate School of Theology and theology at Santa Clara University in the United States. He went on to study documentary film and media arts directing at the School of Visual Arts (SVA).</p>
         </article>
         <article class="person">
-          <div class="portrait grain" style="--f: var(--f5)"><span aria-hidden="true">·</span></div>
-          <h3 class="tbd">[Name]</h3>
-          <p class="label">Cinematographer</p>
-          <p class="bio tbd">[Short bio, 40 to 90 words, written in the third person.]</p>
+          <div class="portrait"><img src="assets/img/people/ji-eun-hwang.jpg" alt="Ji Eun Hwang" loading="lazy"></div>
+          <h3>Ji Eun Hwang</h3>
+          <p class="label">Director · International Distribution</p>
+          <p class="bio">Ji Eun Hwang studied industrial design at KAIST and worked as a UX designer at one of Korea’s largest advertising agencies and at a tech startup before taking a leap: leaving that career behind to make documentaries. Her first feature documentary, <em>Forth and Back</em> (<span lang="ko">돌아서 제자리로</span>), is a work of direct cinema filmed over three years at Kuma, a youth center in Bucheon. Having recently realized that her work keeps coming back to questions of diaspora, she is now looking for new ground to explore. She joined LiNK (Liberty in North Korea) in 2022, where she is now a senior content producer.</p>
         </article>
       </div>
     </div>
@@ -156,12 +258,12 @@
   <section class="contact" id="contact">
     <div class="container">
       <p class="label">Contact</p>
-      <h2>Get in touch</h2>
+      <h2>Let’s meet in Amsterdam</h2>
+      <p class="contact-lead">We’ll be in Amsterdam November 13–18 for K-Pitch Day at IDFA. Write to us to set up a meeting or request a screener.</p>
       <div class="contact-grid">
-        <div><p class="label">General</p><p class="tbd">[hello@anamnesisfilm.com]</p></div>
-        <div><p class="label">Press &amp; sales</p><p class="tbd">[Name · email]</p></div>
-        <div><p class="label">Follow</p><p class="tbd">[Instagram] · [Vimeo]</p></div>
-        <div><p class="label">Studio</p><p class="tbd">[Seoul, Korea]</p></div>
+        <div><p class="label">Email</p><p><a href="mailto:filmanamnesis@gmail.com">filmanamnesis@gmail.com</a></p></div>
+        <div><p class="label">In Amsterdam</p><p>November 13–18 · meetings by email</p></div>
+        <div><p class="label">Follow</p><p><a href="https://www.instagram.com/film_anamnesis/" target="_blank" rel="noopener">Instagram ↗</a></p></div>
       </div>
     </div>
   </section>

@@ -1,7 +1,28 @@
-// Anamnesis Film — small site behaviors: header state, phone menu, rotating taglines, hero grain.
+// Anamnesis Film — small site behaviors: header state, phone menu, trailers, first-screen slideshow.
 (() => {
   'use strict';
   const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+  /* Start each newly opened page at its top (same code in both drafts).
+     The claude.ai preview runs the site in a frame and, just after a page loads, scrolls it back to
+     where the previous page was, so a film page opened halfway down. On a fresh page load inside a
+     frame, this undoes that one restore: to the top, or to the #section a link asked for. It stops as
+     soon as the visitor scrolls, taps or types, and does nothing on Back/Forward or outside a frame. */
+  const navEntry = performance.getEntriesByType ? performance.getEntriesByType('navigation')[0] : null;
+  if (window.self !== window.top && (!navEntry || navEntry.type === 'navigate')) {
+    let settling = true;
+    const settle = () => {
+      const id = location.hash ? decodeURIComponent(location.hash.slice(1)) : '';
+      const target = id && document.getElementById(id);
+      if (target) target.scrollIntoView({ block: 'start', behavior: 'instant' });
+      else if (!id) window.scrollTo({ top: 0, left: 0, behavior: 'instant' });
+    };
+    const stopSettling = () => { settling = false; };
+    ['wheel', 'touchstart', 'keydown', 'pointerdown'].forEach(type => window.addEventListener(type, stopSettling, { once: true, passive: true }));
+    window.addEventListener('scroll', () => { if (settling) settle(); }, { passive: true });
+    if (document.readyState === 'loading') document.addEventListener('DOMContentLoaded', settle); else settle();
+    window.addEventListener('load', () => { if (settling) settle(); setTimeout(stopSettling, 600); });
+  }
 
   /* Header turns solid once the page scrolls past the top. */
   const header = document.querySelector('.site-header');
@@ -26,65 +47,61 @@
     document.addEventListener('keydown', e => { if (e.key === 'Escape') setOpen(false); });
   }
 
-  /* Rotating taglines over the hero: each fades out fully before the next fades in. */
-  const lines = [...document.querySelectorAll('.taglines span')];
-  if (lines.length > 1) {
-    let i = 0;
-    setInterval(() => {
-      lines[i].classList.remove('on');
-      i = (i + 1) % lines.length;
-      setTimeout(() => lines[i].classList.add('on'), 1000);
-    }, 4200);
-  }
+  /* Trailers: the video player loads only when someone presses play.
+     Inside a framed preview (the claude.ai artifact) the button just opens the video site. */
+  if (window.self === window.top) document.querySelectorAll('.trailer[data-embed]').forEach(frame => {
+    const play = frame.querySelector('.play');
+    if (!play) return;
+    play.addEventListener('click', e => {
+      e.preventDefault();
+      const player = document.createElement('iframe');
+      player.src = frame.dataset.embed;
+      player.title = play.getAttribute('aria-label') || 'Trailer';
+      player.allow = 'autoplay; encrypted-media; fullscreen; picture-in-picture';
+      player.allowFullscreen = true;
+      frame.replaceChildren(player);
+    });
+  });
 
-  /* Hero stand-in until the video loop arrives: soft drifting light with film grain.
-     Rendered small and scaled up so the grain reads as soft, like projected film. */
-  const canvas = document.querySelector('.hero-grain');
-  if (canvas && canvas.getContext) {
-    const ctx = canvas.getContext('2d');
-    const SCALE = 0.25;
-    let w = 0, h = 0, running = false, last = 0;
-
-    const resize = () => {
-      const r = canvas.getBoundingClientRect();
-      w = canvas.width = Math.max(1, Math.round(r.width * SCALE));
-      h = canvas.height = Math.max(1, Math.round(r.height * SCALE));
+  /* First screen: a slow crossfade through the studio photos (same code in both drafts).
+     Only the first photo loads with the page; the rest load once the page has finished loading.
+     It moves only while on screen and while the tab is visible, has a Pause button,
+     and stays on the first photo for anyone who prefers reduced motion. */
+  const slides = document.querySelector('[data-slides]');
+  const photos = slides ? [...slides.querySelectorAll('img')] : [];
+  if (photos.length > 1 && !reduceMotion) {
+    const toggle = slides.parentElement.querySelector('.slides-toggle');
+    const HOLD = 6000;
+    let current = 0, timer = null, paused = false, onScreen = true;
+    const load = img => {
+      if (img.dataset.srcset) { img.srcset = img.dataset.srcset; delete img.dataset.srcset; }
+      if (img.dataset.src) { img.src = img.dataset.src; delete img.dataset.src; }
     };
-    const draw = t => {
-      const x = w * (0.55 + 0.16 * Math.sin(t / 8000));
-      const y = h * (0.38 + 0.08 * Math.cos(t / 11000));
-      const flicker = 0.92 + Math.random() * 0.08;
-      ctx.fillStyle = '#0B0F17';
-      ctx.fillRect(0, 0, w, h);
-      const g = ctx.createRadialGradient(x, y, 0, x, y, Math.max(w, h) * 0.8);
-      g.addColorStop(0, `rgba(96, 116, 152, ${0.55 * flicker})`);
-      g.addColorStop(0.45, `rgba(43, 61, 97, ${0.35 * flicker})`);
-      g.addColorStop(1, 'rgba(11, 15, 23, 0)');
-      ctx.fillStyle = g;
-      ctx.fillRect(0, 0, w, h);
-      const img = ctx.getImageData(0, 0, w, h);
-      const d = img.data;
-      for (let p = 0; p < d.length; p += 4) {
-        const n = (Math.random() - 0.5) * 26;
-        d[p] += n; d[p + 1] += n; d[p + 2] += n;
-      }
-      ctx.putImageData(img, 0, 0);
+    const ready = img => img.complete && img.naturalWidth > 0;
+    const step = () => {
+      const next = (current + 1) % photos.length;
+      if (!ready(photos[next])) return; // still downloading: try again on the next beat
+      photos[current].classList.remove('is-on');
+      photos[next].classList.add('is-on');
+      current = next;
     };
-    const loop = t => {
-      if (!running) return;
-      if (t - last > 55) { draw(t); last = t; }
-      requestAnimationFrame(loop);
-    };
-
-    resize();
-    draw(0);
-    window.addEventListener('resize', () => { resize(); draw(performance.now()); });
-    if (!reduceMotion && 'IntersectionObserver' in window) {
-      new IntersectionObserver(([entry]) => {
-        const visible = entry.isIntersecting && !document.hidden;
-        if (visible && !running) { running = true; requestAnimationFrame(loop); }
-        if (!visible) running = false;
-      }).observe(canvas);
+    const stop = () => { clearInterval(timer); timer = null; };
+    const start = () => { if (!timer && !paused && onScreen && !document.hidden) timer = setInterval(step, HOLD); };
+    const loadRest = () => photos.slice(1).forEach(load);
+    if (document.readyState === 'complete') loadRest(); else window.addEventListener('load', loadRest);
+    document.addEventListener('visibilitychange', () => (document.hidden ? stop() : start()));
+    if ('IntersectionObserver' in window) {
+      new IntersectionObserver(([entry]) => { onScreen = entry.isIntersecting; onScreen ? start() : stop(); }).observe(slides);
     }
+    if (toggle) {
+      toggle.hidden = false;
+      toggle.addEventListener('click', () => {
+        paused = !paused;
+        toggle.textContent = paused ? 'Play' : 'Pause';
+        toggle.setAttribute('aria-label', paused ? 'Play the slideshow' : 'Pause the slideshow');
+        paused ? stop() : start();
+      });
+    }
+    start();
   }
 })();
