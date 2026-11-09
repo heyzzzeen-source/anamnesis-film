@@ -206,9 +206,9 @@
     if (choice) gtag('consent', 'update', { analytics_storage: choice });
 
     /* Team devices. Open the site once with ?team=1 on a phone or computer to mark it as a team
-       device (?team=0 unmarks it). Its visits carry traffic_type "internal", which GA's Internal
-       Traffic data filter drops, so the team showing the site around doesn't inflate the numbers.
-       The ?team part is taken out of the address before GA sees the page. */
+       device (?team=0 unmarks it). A team device doesn't load Google Analytics at all, so the
+       team showing the site around never reaches the numbers. (Marking hits with traffic_type
+       "internal" was tried first, Nov 9: Google's tag sends its first page view without it.) */
     const TEAM_KEY = 'af-team';
     const teamParam = new URLSearchParams(location.search).get('team');
     try {
@@ -217,27 +217,32 @@
     } catch (e) { /* private mode: can't remember the mark */ }
     let isTeam = teamParam === '1';
     try { isTeam = isTeam || localStorage.getItem(TEAM_KEY) === '1'; } catch (e) { /* as above */ }
-    const teamParams = isTeam ? { traffic_type: 'internal' } : {};
 
     /* Tidy address bar. Links from the namecard QR or Instagram arrive with long tracking tags
-       (utm_…, plus fbclid, which Instagram and Facebook add on their own). GA gets the address
-       with the utm_ tags (that's how it knows the source) but without click ids or ?team, and the
-       address bar is then cut back to the plain page, so a visitor who copies or shares it passes
-       on a clean link. */
-    const landing = new URL(location.href);
+       (utm_…, plus fbclid, which Instagram and Facebook add on their own). Click ids and ?team
+       come off at once. The utm_ tags stay until GA has read the page, because GA takes the
+       source from the address itself (a page_location passed in config is ignored for the first
+       page view; checked Nov 9), and come off a moment later, so a visitor who copies or shares
+       the address passes on a clean link. */
+    const strip = (url, test) => { [...url.searchParams.keys()].filter(test).forEach(k => url.searchParams.delete(k)); return url; };
+    const setAddress = url => { if (url.href !== location.href) history.replaceState(history.state, '', url); };
     const clickIds = ['fbclid', 'gclid', 'igshid', 'msclkid', 'team'];
-    clickIds.forEach(k => landing.searchParams.delete(k));
-    const pageLocation = landing.href;
-    const shown = new URL(landing);
-    [...shown.searchParams.keys()].filter(k => k.startsWith('utm_')).forEach(k => shown.searchParams.delete(k));
-    if (shown.href !== location.href) history.replaceState(history.state, '', shown);
+    setAddress(strip(new URL(location.href), k => clickIds.includes(k)));
+    let tidied = false;
+    const tidy = () => { if (!tidied) { tidied = true; setAddress(strip(new URL(location.href), k => k.startsWith('utm_'))); } };
 
     gtag('js', new Date());
-    gtag('config', GA_ID, { page_location: pageLocation, allow_google_signals: false, allow_ad_personalization_signals: false, ...teamParams });
-    const tag = document.createElement('script');
-    tag.async = true;
-    tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
-    document.head.appendChild(tag);
+    gtag('config', GA_ID, { allow_google_signals: false, allow_ad_personalization_signals: false });
+    if (isTeam) {
+      tidy();
+    } else {
+      const tag = document.createElement('script');
+      tag.async = true;
+      tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+      tag.onload = () => setTimeout(tidy, 1000);
+      document.head.appendChild(tag);
+      setTimeout(tidy, 5000); // in case GA is blocked
+    }
 
     let banner = null;
     const decide = v => {
@@ -276,7 +281,7 @@
     /* Events. Each needs its parameters registered as custom dimensions in GA (Admin → Custom
        definitions) to show up in reports: film, card_position, link_type, contact_method.
        No names or email addresses are sent, only which film and which kind of link. */
-    const send = (name, params) => gtag('event', name, { ...params, ...teamParams });
+    const send = (name, params) => gtag('event', name, params);
 
     // contact_email (a key event in GA): the email address is clicked, or copied from the page.
     // card click: any of the three links (photo, title, button) on the "Looking for partners" cards.
