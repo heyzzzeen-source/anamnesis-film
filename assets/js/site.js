@@ -178,4 +178,71 @@
     }
     start();
   }
+
+  /* Google Analytics 4 (studio account filmanamnesis@gmail.com, property "anamnesisfilm.com").
+     Runs only on the real site, so local and claude.ai previews don't count as visits.
+     Consent: visitors whose device clock is on a European time zone see a small banner, and
+     analytics cookies stay off until they press Accept. As a second guard, Google's Consent Mode
+     also keeps cookies off for visitors Google places in the EU/EEA, UK or Switzerland, whatever
+     their clock says; it then sends only cookieless pings. Everyone else is counted normally.
+     No ad features: all ad_* consent types stay denied. The choice is kept in localStorage. */
+  const GA_ID = 'G-5G77RX7QDR';
+  if (location.hostname === 'anamnesisfilm.com') {
+    const KEY = 'af-analytics-consent';
+    const read = () => { try { return localStorage.getItem(KEY); } catch (e) { return null; } };
+    const save = v => { try { localStorage.setItem(KEY, v); } catch (e) { /* private mode: ask again next visit */ } };
+    let tz = '';
+    try { tz = Intl.DateTimeFormat().resolvedOptions().timeZone || ''; } catch (e) { /* old browser */ }
+    const inEurope = /^(Europe\/|Atlantic\/(Canary|Madeira|Azores|Faroe|Reykjavik)$|Arctic\/Longyearbyen$)/.test(tz);
+    const choice = read(); // 'granted', 'denied' or null
+
+    window.dataLayer = window.dataLayer || [];
+    window.gtag = function () { window.dataLayer.push(arguments); };
+    const ads = { ad_storage: 'denied', ad_user_data: 'denied', ad_personalization: 'denied' };
+    gtag('consent', 'default', { ...ads, analytics_storage: inEurope ? 'denied' : 'granted' });
+    gtag('consent', 'default', { ...ads, analytics_storage: 'denied', region: [
+      'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT',
+      'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'IS', 'LI', 'NO', 'GB', 'CH'] });
+    if (choice) gtag('consent', 'update', { analytics_storage: choice });
+    gtag('js', new Date());
+    gtag('config', GA_ID, { allow_google_signals: false, allow_ad_personalization_signals: false });
+    const tag = document.createElement('script');
+    tag.async = true;
+    tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
+    document.head.appendChild(tag);
+
+    let banner = null;
+    const decide = v => {
+      save(v);
+      gtag('consent', 'update', { analytics_storage: v });
+      if (banner) { banner.remove(); banner = null; }
+    };
+    const showBanner = () => {
+      if (banner) return;
+      banner = document.createElement('div');
+      banner.className = 'consent';
+      banner.setAttribute('role', 'region');
+      banner.setAttribute('aria-label', 'Cookie choice');
+      banner.innerHTML =
+        '<p>May we use analytics cookies (Google Analytics) to count visits? No ads, and you can change this any time in the footer. ' +
+        '<a href="https://policies.google.com/technologies/partner-sites" target="_blank" rel="noopener">How Google uses this data</a></p>' +
+        '<div class="consent-actions"><button type="button" class="btn" data-v="denied">Decline</button>' +
+        '<button type="button" class="btn solid" data-v="granted">Accept</button></div>';
+      banner.addEventListener('click', e => { const b = e.target.closest('button[data-v]'); if (b) decide(b.dataset.v); });
+      document.body.appendChild(banner);
+    };
+    if (inEurope) {
+      if (!choice) showBanner();
+      // A way to change the choice later, as GDPR asks: "Cookie settings" in the footer.
+      const footer = document.querySelector('.footer-inner');
+      if (footer) {
+        const link = document.createElement('button');
+        link.type = 'button';
+        link.className = 'consent-link';
+        link.textContent = 'Cookie settings';
+        link.addEventListener('click', showBanner);
+        footer.appendChild(link);
+      }
+    }
+  }
 })();
