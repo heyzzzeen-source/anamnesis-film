@@ -215,17 +215,25 @@
       if (teamParam === '1') localStorage.setItem(TEAM_KEY, '1');
       if (teamParam === '0') localStorage.removeItem(TEAM_KEY);
     } catch (e) { /* private mode: can't remember the mark */ }
-    if (teamParam !== null) {
-      const clean = new URL(location.href);
-      clean.searchParams.delete('team');
-      history.replaceState(history.state, '', clean);
-    }
     let isTeam = teamParam === '1';
     try { isTeam = isTeam || localStorage.getItem(TEAM_KEY) === '1'; } catch (e) { /* as above */ }
     const teamParams = isTeam ? { traffic_type: 'internal' } : {};
 
+    /* Tidy address bar. Links from the namecard QR or Instagram arrive with long tracking tags
+       (utm_…, plus fbclid, which Instagram and Facebook add on their own). GA gets the address
+       with the utm_ tags (that's how it knows the source) but without click ids or ?team, and the
+       address bar is then cut back to the plain page, so a visitor who copies or shares it passes
+       on a clean link. */
+    const landing = new URL(location.href);
+    const clickIds = ['fbclid', 'gclid', 'igshid', 'msclkid', 'team'];
+    clickIds.forEach(k => landing.searchParams.delete(k));
+    const pageLocation = landing.href;
+    const shown = new URL(landing);
+    [...shown.searchParams.keys()].filter(k => k.startsWith('utm_')).forEach(k => shown.searchParams.delete(k));
+    if (shown.href !== location.href) history.replaceState(history.state, '', shown);
+
     gtag('js', new Date());
-    gtag('config', GA_ID, { allow_google_signals: false, allow_ad_personalization_signals: false, ...teamParams });
+    gtag('config', GA_ID, { page_location: pageLocation, allow_google_signals: false, allow_ad_personalization_signals: false, ...teamParams });
     const tag = document.createElement('script');
     tag.async = true;
     tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
