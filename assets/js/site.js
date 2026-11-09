@@ -204,8 +204,28 @@
       'AT', 'BE', 'BG', 'HR', 'CY', 'CZ', 'DK', 'EE', 'FI', 'FR', 'DE', 'GR', 'HU', 'IE', 'IT', 'LV', 'LT',
       'LU', 'MT', 'NL', 'PL', 'PT', 'RO', 'SK', 'SI', 'ES', 'SE', 'IS', 'LI', 'NO', 'GB', 'CH'] });
     if (choice) gtag('consent', 'update', { analytics_storage: choice });
+
+    /* Team devices. Open the site once with ?team=1 on a phone or computer to mark it as a team
+       device (?team=0 unmarks it). Its visits carry traffic_type "internal", which GA's Internal
+       Traffic data filter drops, so the team showing the site around doesn't inflate the numbers.
+       The ?team part is taken out of the address before GA sees the page. */
+    const TEAM_KEY = 'af-team';
+    const teamParam = new URLSearchParams(location.search).get('team');
+    try {
+      if (teamParam === '1') localStorage.setItem(TEAM_KEY, '1');
+      if (teamParam === '0') localStorage.removeItem(TEAM_KEY);
+    } catch (e) { /* private mode: can't remember the mark */ }
+    if (teamParam !== null) {
+      const clean = new URL(location.href);
+      clean.searchParams.delete('team');
+      history.replaceState(history.state, '', clean);
+    }
+    let isTeam = teamParam === '1';
+    try { isTeam = isTeam || localStorage.getItem(TEAM_KEY) === '1'; } catch (e) { /* as above */ }
+    const teamParams = isTeam ? { traffic_type: 'internal' } : {};
+
     gtag('js', new Date());
-    gtag('config', GA_ID, { allow_google_signals: false, allow_ad_personalization_signals: false });
+    gtag('config', GA_ID, { allow_google_signals: false, allow_ad_personalization_signals: false, ...teamParams });
     const tag = document.createElement('script');
     tag.async = true;
     tag.src = 'https://www.googletagmanager.com/gtag/js?id=' + GA_ID;
@@ -244,5 +264,46 @@
         footer.appendChild(link);
       }
     }
+
+    /* Events. Each needs its parameters registered as custom dimensions in GA (Admin → Custom
+       definitions) to show up in reports: film, card_position, link_type, contact_method.
+       No names or email addresses are sent, only which film and which kind of link. */
+    const send = (name, params) => gtag('event', name, { ...params, ...teamParams });
+
+    // contact_email (a key event in GA): the email address is clicked, or copied from the page.
+    // card click: any of the three links (photo, title, button) on the "Looking for partners" cards.
+    const cards = [...document.querySelectorAll('.now-card')];
+    document.addEventListener('click', e => {
+      const a = e.target.closest('a[href]');
+      if (!a) return;
+      if (a.getAttribute('href').startsWith('mailto:')) send('contact_email', { contact_method: 'click' });
+      const card = a.closest('.now-card');
+      if (card) {
+        const filmLink = card.querySelector('a.frame, h3 a');
+        send('partner_card_click', {
+          film: filmLink ? filmLink.getAttribute('href').replace(/\.html$/, '') : 'unknown',
+          card_position: cards.indexOf(card) + 1,
+          link_type: a.classList.contains('frame') ? 'photo' : a.classList.contains('btn') ? 'button' : 'title'
+        });
+      }
+    });
+    document.addEventListener('copy', () => {
+      if (String(window.getSelection() || '').includes('filmanamnesis@gmail.com')) send('contact_email', { contact_method: 'copy' });
+    });
+
+    // Scroll depth: 25, 50 and 75 % of the page, once each per page view. GA's own scroll event
+    // (enhanced measurement) already sends 90 % under the same name and parameter, so all four
+    // marks land in one report: event "scroll", dimension "Percent scrolled".
+    const marks = [25, 50, 75];
+    let nextMark = 0, ticking = false;
+    const measure = () => {
+      ticking = false;
+      const doc = document.documentElement;
+      const seen = (window.scrollY + window.innerHeight) / doc.scrollHeight * 100;
+      while (nextMark < marks.length && seen >= marks[nextMark]) send('scroll', { percent_scrolled: marks[nextMark++] });
+      if (nextMark >= marks.length) window.removeEventListener('scroll', onScroll);
+    };
+    const onScroll = () => { if (!ticking) { ticking = true; requestAnimationFrame(measure); } };
+    window.addEventListener('scroll', onScroll, { passive: true });
   }
 })();
